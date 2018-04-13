@@ -561,7 +561,8 @@ bool non_blocking_connect(socket_type s, boost::system::error_code& ec)
   // get spurious readiness notifications from the reactor.
 #if defined(BOOST_ASIO_WINDOWS) \
   || defined(__CYGWIN__) \
-  || defined(__SYMBIAN32__)
+  || defined(__SYMBIAN32__) \
+  || defined(__VXWORKS__)
   fd_set write_fds;
   FD_ZERO(&write_fds);
   FD_SET(s, &write_fds);
@@ -575,6 +576,7 @@ bool non_blocking_connect(socket_type s, boost::system::error_code& ec)
 #else // defined(BOOST_ASIO_WINDOWS)
       // || defined(__CYGWIN__)
       // || defined(__SYMBIAN32__)
+      // || defined(__VXWORKS__)
   pollfd fds;
   fds.fd = s;
   fds.events = POLLOUT;
@@ -583,6 +585,7 @@ bool non_blocking_connect(socket_type s, boost::system::error_code& ec)
 #endif // defined(BOOST_ASIO_WINDOWS)
        // || defined(__CYGWIN__)
        // || defined(__SYMBIAN32__)
+       // || defined(__VXWORKS__)
   if (ready == 0)
   {
     // The asynchronous connect operation is still in progress.
@@ -610,7 +613,7 @@ bool non_blocking_connect(socket_type s, boost::system::error_code& ec)
 int socketpair(int af, int type, int protocol,
     socket_type sv[2], boost::system::error_code& ec)
 {
-#if defined(BOOST_ASIO_WINDOWS) || defined(__CYGWIN__)
+#if defined(BOOST_ASIO_WINDOWS) || defined(__CYGWIN__) || defined(__VXWORKS__)
   (void)(af);
   (void)(type);
   (void)(protocol);
@@ -1810,7 +1813,8 @@ int poll_read(socket_type s, state_type state,
 
 #if defined(BOOST_ASIO_WINDOWS) \
   || defined(__CYGWIN__) \
-  || defined(__SYMBIAN32__)
+  || defined(__SYMBIAN32__) \
+  || defined(__VXWORKS__)
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(s, &fds);
@@ -1834,7 +1838,8 @@ int poll_read(socket_type s, state_type state,
   int result = error_wrapper(::select(s + 1, &fds, 0, 0, timeout), ec);
 #else // defined(BOOST_ASIO_WINDOWS)
       // || defined(__CYGWIN__)
-      // || defined(__SYMBIAN32__)
+      // || defined(__SYMBIAN32__)   
+      // || defined(__VXWORKS__)   
   pollfd fds;
   fds.fd = s;
   fds.events = POLLIN;
@@ -1845,6 +1850,7 @@ int poll_read(socket_type s, state_type state,
 #endif // defined(BOOST_ASIO_WINDOWS)
        // || defined(__CYGWIN__)
        // || defined(__SYMBIAN32__)
+       // || defined(__VXWORKS__)
   if (result == 0)
     ec = (state & user_set_non_blocking)
       ? boost::asio::error::would_block : boost::system::error_code();
@@ -1864,7 +1870,8 @@ int poll_write(socket_type s, state_type state,
 
 #if defined(BOOST_ASIO_WINDOWS) \
   || defined(__CYGWIN__) \
-  || defined(__SYMBIAN32__)
+  || defined(__SYMBIAN32__) \
+  || defined(__VXWORKS__)
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(s, &fds);
@@ -1889,6 +1896,7 @@ int poll_write(socket_type s, state_type state,
 #else // defined(BOOST_ASIO_WINDOWS)
       // || defined(__CYGWIN__)
       // || defined(__SYMBIAN32__)
+      // || defined(__VXWORKS__)
   pollfd fds;
   fds.fd = s;
   fds.events = POLLOUT;
@@ -1899,6 +1907,7 @@ int poll_write(socket_type s, state_type state,
 #endif // defined(BOOST_ASIO_WINDOWS)
        // || defined(__CYGWIN__)
        // || defined(__SYMBIAN32__)
+       // || defined(__VXWORKS__)
   if (result == 0)
     ec = (state & user_set_non_blocking)
       ? boost::asio::error::would_block : boost::system::error_code();
@@ -1918,7 +1927,8 @@ int poll_error(socket_type s, state_type state,
 
 #if defined(BOOST_ASIO_WINDOWS) \
   || defined(__CYGWIN__) \
-  || defined(__SYMBIAN32__)
+  || defined(__SYMBIAN32__) \
+  || defined(__VXWORKS__)
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(s, &fds);
@@ -1997,6 +2007,7 @@ int poll_connect(socket_type s, int msec, boost::system::error_code& ec)
 #else // defined(BOOST_ASIO_WINDOWS)
       // || defined(__CYGWIN__)
       // || defined(__SYMBIAN32__)
+	  // || defined(__VXWORKS__)
   pollfd fds;
   fds.fd = s;
   fds.events = POLLOUT;
@@ -2009,6 +2020,7 @@ int poll_connect(socket_type s, int msec, boost::system::error_code& ec)
 #endif // defined(BOOST_ASIO_WINDOWS)
        // || defined(__CYGWIN__)
        // || defined(__SYMBIAN32__)
+       // || defined(__VXWORKS__)
 }
 
 #endif // !defined(BOOST_ASIO_WINDOWS_RUNTIME)

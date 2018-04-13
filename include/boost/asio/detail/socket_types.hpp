@@ -62,7 +62,7 @@
    || defined(__OpenBSD__) || defined(__linux__) \
    || defined(__EMSCRIPTEN__)
 #  include <poll.h>
-# elif !defined(__SYMBIAN32__)
+# elif !defined(__SYMBIAN32__) && !defined(__VXWORKS__)
 #  include <sys/poll.h>
 # endif
 # include <sys/types.h>
@@ -75,7 +75,9 @@
 #  include <sys/select.h>
 # endif
 # include <sys/socket.h>
-# include <sys/uio.h>
+# if !defined(__VXWORKS__)
+#  include <sys/uio.h>
+# endif
 # include <sys/un.h>
 # include <netinet/in.h>
 # if !defined(__SYMBIAN32__)
